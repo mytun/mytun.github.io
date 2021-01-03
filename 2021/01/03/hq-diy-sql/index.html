@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>
+        Mytun
+    </title>
+    
+<link rel="stylesheet" href="/libs/highlight/styles/monokai-sublime.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body id="bodyx">
+    <div class="hd posts">
+    <a href="/index.html"><i class="fa fa-reply replay-btn" aria-hidden="true"></i></a>
+    <div class="post-title">
+        <p>
+            基于Spring-JPA-Hq语句自动生成查询语句
+        </p>
+        <hr>
+    </div>
+    <div class="post-content">
+        <p>基于String JPA加上前端查询语句灵活自定义结果。</p>
+<h1 id="根据url数据自动查询数据库数据"><a href="#根据url数据自动查询数据库数据" class="headerlink" title="根据url数据自动查询数据库数据"></a>根据url数据自动查询数据库数据</h1><h2 id="可以根据URL传递搜索条件自动查询数据库数据"><a href="#可以根据URL传递搜索条件自动查询数据库数据" class="headerlink" title="可以根据URL传递搜索条件自动查询数据库数据"></a>可以根据URL传递搜索条件自动查询数据库数据</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getTestSql</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    MvcResult mvcResult =  mockMvc.perform(MockMvcRequestBuilders.get(<span class="string">&quot;/user/search&quot;</span>)</span><br><span class="line">            .param(<span class="string">&quot;query&quot;</span>,<span class="string">&quot;name$=$测试人员&quot;</span>)</span><br><span class="line">            .param(<span class="string">&quot;sort&quot;</span>,<span class="string">&quot;name$asc&quot;</span>)).andReturn();</span><br><span class="line">    System.out.println(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="普通查询"><a href="#普通查询" class="headerlink" title="普通查询"></a>普通查询</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getTestSimple</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    MvcResult mvcResult =  mockMvc.perform(MockMvcRequestBuilders.get(<span class="string">&quot;/user/search&quot;</span>)</span><br><span class="line">            .param(<span class="string">&quot;query&quot;</span>,<span class="string">&quot;name$=$测试人员&quot;</span>)).andReturn();</span><br><span class="line">    System.out.println(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getTestMoreTable</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    MvcResult mvcResult =  mockMvc.perform(MockMvcRequestBuilders.get(<span class="string">&quot;/user/search&quot;</span>)</span><br><span class="line">            .param(<span class="string">&quot;query&quot;</span>,<span class="string">&quot;role.id$=$&#x27;111&#x27;&quot;</span>)).andReturn();</span><br><span class="line">    System.out.println(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多条件-and"><a href="#多条件-and" class="headerlink" title="多条件 and"></a>多条件 and</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getTestManyConditionsAnd</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    MvcResult mvcResult =  mockMvc.perform(MockMvcRequestBuilders.get(<span class="string">&quot;/user/search&quot;</span>)</span><br><span class="line">            .param(<span class="string">&quot;query&quot;</span>,<span class="string">&quot;name$=$测试人员,role.id$=$&#x27;111&#x27;,+&quot;</span>)).andReturn();</span><br><span class="line">    System.out.println(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多条件-or"><a href="#多条件-or" class="headerlink" title="多条件 or"></a>多条件 or</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getTestManyConditionsOr</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    MvcResult mvcResult =  mockMvc.perform(MockMvcRequestBuilders.get(<span class="string">&quot;/user/search&quot;</span>)</span><br><span class="line">            .param(<span class="string">&quot;query&quot;</span>,<span class="string">&quot;name$=$测试人员,role.id$=$&#x27;111&#x27;,-&quot;</span>)).andReturn();</span><br><span class="line">    System.out.println(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多条件-and-和-or"><a href="#多条件-and-和-or" class="headerlink" title="多条件 and 和 or"></a>多条件 and 和 or</h3><h4 id="多条件查询按照后缀表达式生成查询语句"><a href="#多条件查询按照后缀表达式生成查询语句" class="headerlink" title="多条件查询按照后缀表达式生成查询语句"></a>多条件查询按照后缀表达式生成查询语句</h4><hr>
+<p>例如： (id=’123222’ and  (name=’xasd’ or phone=’123456’ )) or (name=’123’ and phone=’2222’)<br>语句则：id$=$’123222’,name$=$’xasd’,phone$=$’123456’,-,+,name$=$’123’,phone$=$’2222’,+,-</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getTestManyConditionsAndOr</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    MvcResult mvcResult =  mockMvc.perform(MockMvcRequestBuilders.get(<span class="string">&quot;/user/search&quot;</span>)</span><br><span class="line">            .param(<span class="string">&quot;query&quot;</span>,<span class="string">&quot;name$=$测试人员,role.id$=$&#x27;111&#x27;,-,name$=$测试人员,role.id$=$&#x27;111&#x27;,-,+&quot;</span>)).andReturn();</span><br><span class="line">    System.out.println(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getTestSort</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    MvcResult mvcResult =  mockMvc.perform(MockMvcRequestBuilders.get(<span class="string">&quot;/user/search&quot;</span>)</span><br><span class="line">            .param(<span class="string">&quot;sort&quot;</span>,<span class="string">&quot;name$asc,role.name$desc&quot;</span>)).andReturn();</span><br><span class="line">    System.out.println(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+</div>
+
+    <div class="footer" id="footer">
+    <p>Copyright © <span id="date">2021</span> <a class="flink" target="_blank" rel="noopener" href="https://github.com/mytun">Mytun.</a></p>
+</div>
+
+<script src="/libs/jquery.min.js"></script>
+
+
+<script src="/libs/highlight/highlight.pack.js"></script>
+
+
+<script src="/js/js.js"></script>
+
+<style type="text/css">
+.v * {
+    color: #698fca;
+}
+
+.v .vlist .vcard .vhead .vsys {
+    color: #3a3e4a;
+}
+
+.v .vlist .vcard .vh .vmeta .vat {
+    color: #638fd5;
+}
+
+.v .vlist .vcard .vhead .vnick {
+    color: #6ba1ff;
+}
+
+.v a {
+    color: #8696b1;
+}
+
+.v .vlist .vcard .vhead .vnick:hover {
+    color: #669bfc;
+}
+</style>
+
+</body>
+
+</html>
